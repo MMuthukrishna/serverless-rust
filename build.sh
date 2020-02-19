@@ -23,9 +23,9 @@ export CARGO_TARGET_DIR=$PWD/target/lambda
     # cargo only supports --release flag for release
     # profiles. dev is implicit
     if [ "${PROFILE}" == "release" ]; then
-        cargo build ${CARGO_FLAGS:-} --${PROFILE}
+        cargo build ${CARGO_FLAGS:-} --${PROFILE} --out-dir=${CARGO_TARGET_DIR}/release -Z unstable-options
     else
-        cargo build ${CARGO_FLAGS:-}
+        cargo build ${CARGO_FLAGS:-}  --out-dir=${CARGO_TARGET_DIR}/debug -Z unstable-options
     fi
 ) 1>&2
 
