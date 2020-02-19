@@ -84,8 +84,7 @@ class RustPlugin {
     if (profile) {
       buildCommand.unshift(`PROFILE=${profile}`);
     }
-
-    return execSync(`${buildCommand.join(" ")}`);
+    return execSync(`${buildCommand.join(" ")}`, {stdio: 'inherit'});
   }
 
   getDockerArgs({ funcArgs, cargoPackage, binary, profile }) {
@@ -165,11 +164,13 @@ class RustPlugin {
         profile,
         dockerless: this.custom.dockerless
       });
-      if (res.error || res.status > 0) {
-        this.serverless.cli.log(
-          `Rust build encountered an error: ${res.error} ${res.status}.`
-        );
-        throw new Error(res.error);
+      if (res != null) {
+        if (res.error || res.status > 0) {
+          this.serverless.cli.log(
+            `Rust build encountered an error: ${res.error} ${res.status}.`
+          );
+          throw new Error(res.error);
+        }
       }
       // If all went well, we should now have find a packaged compiled binary under `target/lambda/release`.
       //
@@ -206,3 +207,4 @@ class RustPlugin {
 }
 
 module.exports = RustPlugin;
+
